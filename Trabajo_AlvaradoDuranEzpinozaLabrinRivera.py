@@ -1,7 +1,29 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 FX = lambda x: 2 * np.sin(2 * np.pi * x)  
 
+def graficar_resultados(resultados):
+        # Preparar los datos para la gráfica 3D
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    X = []
+    Y = []
+    Z = []
+    for t, xs, ws in resultados:
+        for x, w in zip(xs, ws):
+            X.append(x)
+            Y.append(t)
+            Z.append(w)
+    
+    ax.plot_trisurf(X, Y, Z, cmap='viridis')
+
+    ax.set_xlabel('Posición (x)')
+    ax.set_ylabel('Tiempo (t)')
+    ax.set_zlabel('Temperatura (W)')
+
+    plt.show()
 
 def diferencias_regresivas_calor(L, T, alpha, m, N):
     resultados = []
@@ -58,7 +80,7 @@ def main():
     alpha = 1/4
     m = 10
     N = 10
-    print(diferencias_regresivas_calor(L, T, alpha, m, N))
-
+    resultado = diferencias_regresivas_calor(L, T, alpha, m, N)
+    graficar_resultados(resultado)
 
 main()
