@@ -52,5 +52,13 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     ## de la forma tiempo, posiciónes, aproximaciones
     return resultados 
 
+def main():
+    L = 1
+    T = 0.1
+    alpha = 1/4
+    m = 10
+    N = 10
+    print(diferencias_regresivas_calor(L, T, alpha, m, N))
 
-print(diferencias_regresivas_calor(1, 0.1, 1/4, 10, 10))
+
+main()
