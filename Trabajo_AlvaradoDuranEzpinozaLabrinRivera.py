@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+
+
 FX = lambda x: 2 * np.sin(2 * np.pi * x)  
 
 def graficar_resultados(resultados,color_map):
@@ -25,6 +27,7 @@ def graficar_resultados(resultados,color_map):
 
     return fig,ax
 
+## Actividad (1)
 def diferencias_regresivas_calor(L, T, alpha, m, N):
     resultados = []
     
@@ -56,7 +59,7 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     
     ## Paso 6
     z = np.zeros(m - 1)
-    for j in range(1, N):
+    for j in range(1, N + 1):
         t = j * k
         
         ## Paso 7: Calcular z1
@@ -101,16 +104,30 @@ def solucionReal(m, N):
     return resultados
 
 def main():
+    ## Actividad (2)
     L = 1
     T = 0.1
     alpha = 1/4
     m = 10
     N = 10
     resultado = diferencias_regresivas_calor(L, T, alpha, m, N)
+    print("Aproximacion w_ij a u_ij",end="\n")
+    for t, xs, ws in resultado:
+        print(f"Tiempo t = {t:.2f}")
+        for x, w in zip(xs, ws):
+            print(f"x = {x:.2f}, w = {w:.4f}")
+        print()
+
+    ## Actividad 3
     fig1, ax1 = graficar_resultados(resultado, color_map='viridis')
     ax1.set_title('Aproximacion w_ij a u_ij  ')
-    
     resultadoReal = solucionReal(m, N)
+    print("Resultado real",end="\n")
+    for t, xs, ws in resultadoReal:
+        print(f"Tiempo t = {t:.2f}")
+        for x, w in zip(xs, ws):
+            print(f"x = {x:.2f}, w = {w:.4f}")
+        print()
     fig2, ax2 = graficar_resultados(resultadoReal, color_map='plasma')
     ax2.set_title('Resultado real de u_ij ')
     
