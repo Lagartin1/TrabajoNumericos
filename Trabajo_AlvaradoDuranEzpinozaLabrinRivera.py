@@ -1,6 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#import matplotlib.pyplot as plt
+#from mpl_toolkits.mplot3d import Axes3D
 
 FX = lambda x: 2 * np.sin(2 * np.pi * x)  
 
@@ -27,49 +27,58 @@ def graficar_resultados(resultados):
 
 def diferencias_regresivas_calor(L, T, alpha, m, N):
     resultados = []
-    ##paso1
+    
+    # Paso 1: Calcular h, k y lambda
     h = L / m
     k = T / N
     lambda_ = alpha**2 * k / h**2
-    x = np.linspace(h, L-h, m+1)
-    w = np.zeros(m)
-    ##paso2
-    for i in range(0,m):
-        w[i] = FX((i+1)*h) # Condiciones iniciales
-    l = np.zeros(m)
-    u = np.zeros(m-1)
-    ##paso 3
+    x = np.linspace(h, L - h, m - 1)
+    w = np.zeros(m - 1)
+    
+    # Paso 2: Valores iniciales
+    for i in range(m - 1):
+        w[i] = FX((i + 1) * h)  # Condiciones iniciales
+    
+    l = np.zeros(m - 1)
+    u = np.zeros(m - 2)
+    
+    # Paso 3: Inicializar l1 y u1
     l[0] = 1 + 2 * lambda_
     u[0] = -lambda_ / l[0]
-    ##paso 4
-    for i in range(1, m-1):
-        l[i] = 1 + 2 * lambda_ + lambda_ * u[i-1]
+    
+    # Paso 4: Calcular li y ui para i = 2, ..., m-2
+    for i in range(1, m - 2):
+        l[i] = 1 + 2 * lambda_ + lambda_ * u[i - 1]
         u[i] = -lambda_ / l[i]
     
-    ##paso 5
-    l[m-1] = 1 + 2 * lambda_ + lambda_ * u[m-3]
-    ##paso 6
-    z = np.zeros(m)
-    for j in range(0, N):
-        xs = []
-        ##paso 7
+    # Paso 5: Calcular lm-1
+    l[m - 2] = 1 + 2 * lambda_ + lambda_ * u[m - 3]
+    
+    # Paso 6: Iterar sobre j de 1 a N
+    z = np.zeros(m - 1)
+    for j in range(1, N + 1):
         t = j * k
-        z[0] = w[0] / l[0] #define z1
-        ##paso 8
-        for i in range(1, m):
-            z[i] = (w[i] + lambda_ * z[i-1]) / l[i] #rellena z
-        ###paso 9
-        w[m-1] = z[m-1] 
-        ##paso 10
-        for i in range(m-2, -1, -1):
-            w[i] = z[i-1] - u[i-1] * w[i+1]
-        ##paso 11
-        for i in range(0,m):
-            x = i * h
-            xs.append(x)
+        
+        # Paso 7: Calcular z1
+        z[0] = w[0] / l[0]
+        
+        # Paso 8: Calcular zi para i = 2, ..., m-1
+        for i in range(1, m - 1):
+            z[i] = (w[i] + lambda_ * z[i - 1]) / l[i]
+        
+        # Paso 9: Calcular wm-1
+        w[m - 2] = z[m - 2]
+        
+        # Paso 10: Calcular wi para i = m-2, ..., 1
+        for i in range(m - 3, -1, -1):
+            w[i] = z[i] - u[i] * w[i + 1]
+        
+        # Paso 11: Guardar resultados para t = tj
+        xs = [(i+1) * h for i in range(m-1)]
         ## en el tiempo t=tj
         # tiene temperaturas aproximadas aproximadas Wi = Wij => posición xi, tiempo xj
-        resultados.append((t,xs,w))
+        resultados.append((t, xs, w.copy()))
+    
     ## salida aproximaciones de Wij en cada tiempo tj en cada posición xi
     ## de la forma tiempo, posiciónes, aproximaciones
     return resultados 
@@ -81,6 +90,11 @@ def main():
     m = 10
     N = 10
     resultado = diferencias_regresivas_calor(L, T, alpha, m, N)
-    graficar_resultados(resultado)
+    for t, xs, ws in resultado:
+        print(f"Tiempo t = {t:.2f}")
+        for x, w in zip(xs, ws):
+            print(f"x = {x:.2f}, w = {w:.4f}")
+        print()
+    #graficar_resultados(resultado)
 
 main()
