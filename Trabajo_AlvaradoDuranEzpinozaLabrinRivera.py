@@ -1,13 +1,19 @@
+## BAIN087
+# Francisco Labrin
+# Matias Rivera
+# Ivan Duran
+# Luciano Espinoza
+# Martin Alvarado
+
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-
+# u aprox
 FX = lambda x: 2 * np.sin(2 * np.pi * x)  
 
 def graficar_resultados(resultados,color_map):
-        # Preparar los datos para la gráfica 3D
     fig = plt.figure(figsize=(12, 6))
     ax = fig.add_subplot(111, projection='3d')
     X = []
@@ -35,11 +41,10 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     h = L / m
     k = T / N
     lambda_ = alpha**2 * k / h**2
-    x = np.linspace(h, L - h, m - 1)
-    w = np.zeros(m - 1)
+    w = np.zeros(m-1)
     
     ## Paso 2
-    for i in range(m - 1):
+    for i in range(m):
         w[i] = FX((i + 1) * h)  # Condiciones iniciales
     
     l = np.zeros(m - 1)
@@ -76,8 +81,8 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
         for i in range(m - 3, -1, -1):
             w[i] = z[i] - u[i] * w[i + 1]
         
-        # Paso 11
-        xs = [i * h for i in range(m)]
+        # Paso 11 salida
+        xs = [i * h for i in range( (m) )]
         ## en el tiempo t=tj
         # tiene temperaturas aproximadas aproximadas Wi = Wij => posición xi, tiempo xj
         resultados.append((t, xs, w.copy()))
@@ -86,21 +91,20 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     ## de la forma tiempo, posiciónes, aproximaciones
     return resultados 
 
+
 def solucionReal(m, N):
-    u_real = 0
+    UREAL = lambda x,t:2 * np.exp(- (np.pi**2 / 4) * t) * np.sin(2 * np.pi * x)
     resultados = []
     x = np.linspace(0, 1, num=10, endpoint=False)
     t = np.linspace(0.01, 0.1, num=10, endpoint=False)
-    
     for j in range(N):
         xs = []
         ws = []
         for i in range(m):
-            u_real = 2 * np.exp(- (np.pi**2 / 4) * t[j]) * np.sin(2 * np.pi * x[i])
             xs.append(x[i])
-            ws.append(u_real)
-            
+            ws.append(UREAL(x[i],t[j]))
         resultados.append((t[j],xs,ws))
+        
     return resultados
 
 def main():
@@ -111,6 +115,8 @@ def main():
     m = 10
     N = 10
     resultado = diferencias_regresivas_calor(L, T, alpha, m, N)
+    
+    # impresion de todos los x,w para cada tj para la aproximacion
     print("Aproximacion w_ij a u_ij",end="\n")
     for t, xs, ws in resultado:
         print(f"Tiempo t = {t:.2f}")
@@ -118,9 +124,11 @@ def main():
             print(f"x = {x:.2f}, w = {w:.4f}")
         print()
 
-    ## Actividad 3
-    fig1, ax1 = graficar_resultados(resultado, color_map='viridis')
+    ## Actividad (3) 
+    fig1, ax1 = graficar_resultados(resultado, color_map='viridis') # grafico 1: aproximacion
     ax1.set_title('Aproximacion w_ij a u_ij  ')
+    
+    # impresion de todos los x,w para cada tj para la solucion real
     resultadoReal = solucionReal(m, N)
     print("Resultado real",end="\n")
     for t, xs, ws in resultadoReal:
@@ -128,12 +136,16 @@ def main():
         for x, w in zip(xs, ws):
             print(f"x = {x:.2f}, w = {w:.4f}")
         print()
-    fig2, ax2 = graficar_resultados(resultadoReal, color_map='plasma')
+        
+    fig2, ax2 = graficar_resultados(resultadoReal, color_map='plasma') # grafico 2: u real
     ax2.set_title('Resultado real de u_ij ')
     
-    # Ajustar la posición de los subplots para que no se superpongan
+    # Ajusta la posición de graficos para que no se superpongan
     fig2.tight_layout()
     
-    # Mostrar ambas figuras
     plt.show()
+    
+    
+    
+    
 main()
