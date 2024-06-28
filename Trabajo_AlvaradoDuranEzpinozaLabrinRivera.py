@@ -44,7 +44,7 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     w = np.zeros(m-1)
     
     ## Paso 2
-    for i in range(m):
+    for i in range(m-1):
         w[i] = FX((i + 1) * h)  # Condiciones iniciales
     
     l = np.zeros(m - 1)
