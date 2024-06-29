@@ -13,17 +13,17 @@ from mpl_toolkits.mplot3d import Axes3D
 FX = lambda x: 2 * np.sin(2 * np.pi * x)  
 
 def graficar_resultados(ax, resultados, color_map, title):
-    X = []
+    X = [] #inicializamos los array vacios para los valores de los ejes (x,t,w)
     Y = []
     Z = []
-    for t, xs, ws in resultados:
+    for t, xs, ws in resultados: #llenamos los array con los valores
         for x, w in zip(xs, ws):
             X.append(x)
             Y.append(t)
             Z.append(w)
     
-    ax.plot_trisurf(X, Y, Z, cmap=color_map)
-    ax.set_title(title)
+    ax.plot_trisurf(X, Y, Z, cmap=color_map) #se crea la superficie 3d
+    ax.set_title(title) #ajuste de titulo y nombre ejes
     ax.set_xlabel('Posición (x)')
     ax.set_ylabel('Tiempo (t)')
     ax.set_zlabel('Temperatura (W)')
@@ -71,7 +71,7 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     return resultados 
 
 def solucionReal(m, N):
-    UREAL = lambda x,t:2 * np.exp(- (np.pi**2 / 4) * t) * np.sin(2 * np.pi * x)
+    UREAL = lambda x,t:2 * np.exp(- (np.pi**2 / 4) * t) * np.sin(2 * np.pi * x) #funcion de la solucion real
     resultados = []
     x = np.linspace(0, 1, num=m, endpoint=False)
     t = np.linspace(0.01, 0.1, num=N)
@@ -86,37 +86,42 @@ def solucionReal(m, N):
     return resultados
 
 def main():
+    #valores para las funciones
     L = 1
     T = 0.1
     alpha = 1/4
     m = 10
     N = 10
     resultado = diferencias_regresivas_calor(L, T, alpha, m, N)
-    
+    #imprimimos los resultados aproximados
     print("Aproximacion w_ij a u_ij",end="\n")
     for t, xs, ws in resultado:
         print(f"Tiempo t = {t:.2f}")
         for x, w in zip(xs, ws):
             print(f"x = {x:.2f}, w = {w:.4f}")
         print()
-
+    #imprimimos los resultados reales
     resultadoReal = solucionReal(m, N)
     print("Resultado real",end="\n")
-    for t, xs, ws in resultadoReal:
+    for t, xs, ws in resultadoReal: 
         print(f"Tiempo t = {t:.2f}")
         for x, w in zip(xs, ws):
             print(f"x = {x:.2f}, w = {w:.4f}")
         print()
     
+    #crea la ventana para poner los dos graficos
     fig = plt.figure(figsize=(14, 7))
     
+    #crea el primer grafico, de las soluciones aproximadas, le asigna color
     ax1 = fig.add_subplot(121, projection='3d')
     graficar_resultados(ax1, resultado, color_map='viridis', title='Aproximacion w_ij a u_ij')
     
+    #crea el de las soluciones reales
     ax2 = fig.add_subplot(122, projection='3d')
     graficar_resultados(ax2, resultadoReal, color_map='plasma', title='Resultado real de u_ij')
     
-    plt.tight_layout()
-    plt.show()
+    
+    plt.tight_layout() #ajusta para que no haya solapamiento de los graficos
+    plt.show() #muestra el grafico
 
 main()
