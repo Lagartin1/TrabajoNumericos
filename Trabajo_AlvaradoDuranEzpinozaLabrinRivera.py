@@ -70,10 +70,11 @@ def diferencias_regresivas_calor(L, T, alpha, m, N):
     
     return resultados 
 
-def solucionReal(m, N):
+def solucionReal(N):
     UREAL = lambda x,t:2 * np.exp(- (np.pi**2 / 4) * t) * np.sin(2 * np.pi * x) #funcion de la solucion real
     resultados = []
-    x = np.linspace(0, 1, num=m, endpoint=False)
+    x = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9] #defino los mismos valores que toma en la solucion aproximada
+    m= len(x)
     t = np.linspace(0.01, 0.1, num=N)
     for j in range(N):
         xs = []
@@ -101,7 +102,7 @@ def main():
             print(f"x = {x:.2f}, w = {w:.4f}")
         print()
     #imprimimos los resultados reales
-    resultadoReal = solucionReal(m, N)
+    resultadoReal = solucionReal(N)
     print("Resultado real",end="\n")
     for t, xs, ws in resultadoReal: 
         print(f"Tiempo t = {t:.2f}")
@@ -124,4 +125,4 @@ def main():
     plt.tight_layout() #ajusta para que no haya solapamiento de los graficos
     plt.show() #muestra el grafico
 
-main()
+main() #el programa termina al cerrar la ventana de los graficos
